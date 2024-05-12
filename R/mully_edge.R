@@ -91,7 +91,7 @@ getEdgeAttributes<-function(g,nodeStart,nodeDest){
 #' @examples
 #' g=mully::demo()
 #' addEdge(g,"dr3","g2",attributes=list(name="newEdge"))
-addEdge <- function(g, nodeStart, nodeDest, attributes) {
+addEdge <- function(g, nodeStart, nodeDest, attributes, block_duplicates = TRUE) {
   #Check arguments
   if (missing(g) || missing(nodeStart) || missing(nodeDest)) {
     stop("Invalid Arguments")
@@ -105,10 +105,18 @@ addEdge <- function(g, nodeStart, nodeDest, attributes) {
     df1=cbind(as.data.frame(list(V1=nodeDest,V2=nodeStart),stringsAsFactors = FALSE),as.data.frame(attributes))
     allEdges=getEdgeAttributes(g,nodeStart,nodeDest)
     if(is.directed(g) && !is.null(getIDCommonDF(allEdges,df))){
-      stop("Edge Already Exists ")
+      if(block_duplicates) {
+        stop(paste0("Edge from ", nodeStart, " to ", nodeDest, " already exists."))
+      } else {
+        warning(paste0("Edge from ", nodeStart, " to ", nodeDest, " already exists."))
+      }      
     }
     if(!is.directed(g) && (!is.null(getIDCommonDF(allEdges,df)) || !is.null(getIDCommonDF(allEdges,df1)))){
-      stop("Edge Already Exists ")
+      if(block_duplicates) {
+        stop(paste0("Edge from ", nodeStart, " to ", nodeDest, " already exists."))
+      } else {
+        warning(paste0("Edge from ", nodeStart, " to ", nodeDest, " already exists."))
+      }
     }
   }
   g <- g + edge(nodeStart, nodeDest)
