@@ -193,7 +193,7 @@ getIDCommonDF<-function(df,df1){
   for(i in 1:dim(common)[1]){
     for(j in 1:rownb){
       test=(df[j,]==common[i,])
-      if(!is.na(test) && !FALSE%in%test){
+      if(all(!is.na(test)) && !FALSE%in%test){
         id<-append(id,rownames(df)[j])
       }
     }
